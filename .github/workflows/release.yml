@@ -1,0 +1,74 @@
+name: Release
+
+# Trigger: push a tag like `v1.0.0` and this builds binaries + creates a release.
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build ${{ matrix.target }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-14        # Apple Silicon
+            target: macos-arm64
+          - os: macos-13        # Intel
+            target: macos-x86_64
+          - os: ubuntu-latest   # x86_64
+            target: linux-x86_64
+    steps:
+      - uses: actions/checkout@v4
+
+      # GitHub runners ship a range of CMake versions; relax the minimum so the
+      # project configures everywhere (same trick as the Dockerfile).
+      # `sed -i.bak` works on both GNU (Linux) and BSD (macOS) sed.
+      - name: Configure
+        run: |
+          sed -i.bak 's/VERSION 4.3/VERSION 3.20/g' CMakeLists.txt
+          rm -f CMakeLists.txt.bak
+          cmake -B build -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        run: cmake --build build --parallel
+
+      - name: Run tests
+        working-directory: build
+        run: ctest --output-on-failure
+
+      - name: Package
+        run: |
+          mkdir -p dist
+          cp build/uwu dist/uwu
+          cp README.md LICENSE dist/ 2>/dev/null || true
+          tar -czf uwu-${{ matrix.target }}.tar.gz -C dist .
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: uwu-${{ matrix.target }}
+          path: uwu-${{ matrix.target }}.tar.gz
+
+  release:
+    name: Create GitHub Release
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Create Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" \
+            artifacts/*/*.tar.gz \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "uwu $GITHUB_REF_NAME" \
+            --generate-notes
