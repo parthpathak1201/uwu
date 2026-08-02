@@ -1,0 +1,17 @@
+# Build directories
+build/
+cmake-build-debug/
+
+# IDE / editor files
+.idea/
+*.iml
+.vscode/
+
+# Freebuff app data
+.freebuff/
+
+# Local database files
+*.db*
+
+# OS noise
+.DS_Store
