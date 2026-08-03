@@ -29,9 +29,8 @@ initialized uwu repository
 
 ## Building
 
-Requires **CMake ≥ 4.3** (the project needs it for its C++23 toolchain defaults) and a C++23
-compiler (GCC 12+, Clang 16+, or Apple Clang). On distros that ship older CMake, you can
-lower the requirement like the Dockerfile does (`sed -i 's/VERSION 4.3/VERSION 3.20/g' CMakeLists.txt`).
+Requires **CMake ≥ 3.20** and a C++23 compiler (GCC 12+, Clang 16+, or Apple Clang).
+Ubuntu's stock CMake works out of the box.
 
 ```bash
 cmake -B build

@@ -31,14 +31,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # GitHub runners ship a range of CMake versions; relax the minimum so the
-      # project configures everywhere (same trick as the Dockerfile).
-      # `sed -i.bak` works on both GNU (Linux) and BSD (macOS) sed.
       - name: Configure
-        run: |
-          sed -i.bak 's/VERSION 4.3/VERSION 3.20/g' CMakeLists.txt
-          rm -f CMakeLists.txt.bak
-          cmake -B build -DCMAKE_BUILD_TYPE=Release
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Release
 
       - name: Build
         run: cmake --build build --parallel

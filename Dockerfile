@@ -23,10 +23,6 @@ WORKDIR /app
 # Copy the entire workspace to the container
 COPY . .
 
-# Adjust the CMAKE required version to be compatible with Ubuntu's CMake (3.22)
-# This avoids downloading hefty third-party cmake packages
-RUN sed -i 's/VERSION 4.3/VERSION 3.20/g' CMakeLists.txt
-
 # Create build directory, configure with Release optimization, and compile all tests and binaries
 RUN mkdir build && \
     cd build && \
