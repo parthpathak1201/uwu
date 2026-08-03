@@ -19,10 +19,13 @@ jobs:
         include:
           - os: macos-14        # Apple Silicon
             target: macos-arm64
-          - os: macos-13        # Intel
-            target: macos-x86_64
           - os: ubuntu-latest   # x86_64
             target: linux-x86_64
+        # Note: Intel macOS (macos-13) was dropped because GitHub's Intel runner
+        # pool is severely backed up (jobs queue for 10+ hours). Apple Silicon and
+        # Linux cover virtually all users. To add Intel back later, append:
+        #   - os: macos-13
+        #     target: macos-x86_64
     steps:
       - uses: actions/checkout@v4
 
