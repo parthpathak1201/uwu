@@ -21,6 +21,8 @@ jobs:
             target: macos-arm64
           - os: ubuntu-latest   # x86_64
             target: linux-x86_64
+          - os: ubuntu-24.04-arm  # ARM64
+            target: linux-arm64
         # Note: Intel macOS (macos-13) was dropped because GitHub's Intel runner
         # pool is severely backed up (jobs queue for 10+ hours). Apple Silicon and
         # Linux cover virtually all users. To add Intel back later, append:
